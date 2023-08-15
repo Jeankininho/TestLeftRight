@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test Left Right Stereo</title>
+<style>
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
+  .container {
+    display: flex;
+    width: 50%;
+  }
+  .button {
+    flex: 1;
+    text-align: center;
+    padding: 20px;
+    background-color: #f0f0f0;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="button" id="leftButton">Left</div>
+  <div class="button" id="rightButton">Right</div>
+</div>
+<script>
+  const leftButton = document.getElementById('leftButton');
+  const rightButton = document.getElementById('rightButton');
+
+  const leftAudio = new Audio('left_audio.wav');
+  const rightAudio = new Audio('right_audio.wav');
+
+  leftButton.addEventListener('click', () => {
+    leftAudio.play();
+  });
+
+  rightButton.addEventListener('click', () => {
+    rightAudio.play();
+  });
+</script>
+</body>
+</html>
