@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Test Right Stereo</title>
@@ -23,11 +26,15 @@
     background-color: #3498db;
     color: #fff;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, box-shadow 0.3s;
     height: 100vh; /* Altura de 100% da página */
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); /* Efeito de sombra sutil */
   }
   .button:hover {
     background-color: #2980b9;
+  }
+  .button:active {
+    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.3); /* Efeito de sombra sutil ao clicar */
   }
 </style>
 </head>
@@ -43,12 +50,12 @@
     audioContext = new (window.AudioContext || window.webkitAudioContext)();
   };
 
-  const createMonoAudioBlob = (duration, sampleRate, amplitude) => {
+  const createSineWaveAudioBuffer = (frequency, duration, sampleRate, amplitude) => {
     const numSamples = duration * sampleRate;
     const channelData = new Float32Array(numSamples);
 
     for (let i = 0; i < numSamples; i++) {
-      channelData[i] = amplitude * Math.sin((2 * Math.PI * 440 * i) / sampleRate);
+      channelData[i] = amplitude * Math.sin((2 * Math.PI * frequency * i) / sampleRate);
     }
 
     const audioBuffer = new AudioBuffer({ numberOfChannels: 1, length: numSamples, sampleRate });
@@ -70,7 +77,7 @@
     }
 
     const leftSource = audioContext.createBufferSource();
-    leftSource.buffer = createMonoAudioBlob(duration, sampleRate, amplitude);
+    leftSource.buffer = createSineWaveAudioBuffer(440, duration, sampleRate, amplitude);
     const leftPan = audioContext.createPanner();
     leftPan.setPosition(-1, 0, 0); // Pan to left
     leftSource.connect(leftPan);
@@ -83,13 +90,13 @@
       createAudioContext();
     }
 
-    const leftSource = audioContext.createBufferSource();
-    leftSource.buffer = createMonoAudioBlob(duration, sampleRate, amplitude);
-    const leftPan = audioContext.createPanner();
-    leftPan.setPosition(1, 0, 0); // Pan to left
-    leftSource.connect(leftPan);
-    leftPan.connect(audioContext.destination);
-    leftSource.start();
+    const rightSource = audioContext.createBufferSource();
+    rightSource.buffer = createSineWaveAudioBuffer(440, duration, sampleRate, amplitude);
+    const rightPan = audioContext.createPanner();
+    rightPan.setPosition(1, 0, 0); // Pan to right
+    rightSource.connect(rightPan);
+    rightPan.connect(audioContext.destination);
+    rightSource.start();
   });
 </script>
 </body>
