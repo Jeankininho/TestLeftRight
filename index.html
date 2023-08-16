@@ -60,14 +60,14 @@
   const amplitude = 0.5; // Amplitude (volume)
 
   const leftAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  const leftSource = leftAudioCtx.createBufferSource();
-  leftSource.buffer = createMonoAudioBlob(duration, sampleRate, amplitude);
-  const leftPan = leftAudioCtx.createPanner();
-  leftPan.setPosition(-1, 0, 0); // Pan to left
-  leftSource.connect(leftPan);
-  leftPan.connect(leftAudioCtx.destination);
-
+  
   leftButton.addEventListener('click', () => {
+    const leftSource = leftAudioCtx.createBufferSource();
+    leftSource.buffer = createMonoAudioBlob(duration, sampleRate, amplitude);
+    const leftPan = leftAudioCtx.createPanner();
+    leftPan.setPosition(-1, 0, 0); // Pan to left
+    leftSource.connect(leftPan);
+    leftPan.connect(leftAudioCtx.destination);
     leftSource.start();
   });
 
