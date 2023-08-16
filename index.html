@@ -11,6 +11,7 @@
     align-items: center;
     height: 100vh;
     margin: 0;
+    background-color: #f5f5f5;
   }
   .container {
     display: flex;
@@ -18,10 +19,16 @@
   }
   .button {
     flex: 1;
-    text-align: center;
-    padding: 20px;
-    background-color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #3498db;
+    color: #fff;
     cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  .button:hover {
+    background-color: #2980b9;
   }
 </style>
 </head>
@@ -34,16 +41,37 @@
   const leftButton = document.getElementById('leftButton');
   const rightButton = document.getElementById('rightButton');
 
-  const leftAudio = new Audio('left_audio.wav');
-  const rightAudio = new Audio('right_audio.wav');
+  const createMonoAudioBlob = (duration, sampleRate, amplitude) => {
+    const numSamples = duration * sampleRate;
+    const channelData = new Float32Array(numSamples);
+
+    for (let i = 0; i < numSamples; i++) {
+      channelData[i] = amplitude * Math.sin((2 * Math.PI * 440 * i) / sampleRate);
+    }
+
+    const audioBuffer = new AudioBuffer({ numberOfChannels: 1, length: numSamples, sampleRate });
+    audioBuffer.getChannelData(0).set(channelData);
+
+    return audioBuffer;
+  };
+
+  const sampleRate = 44100; // Samples per second
+  const duration = 1; // Seconds
+  const amplitude = 0.5; // Amplitude (volume)
+
+  const leftAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  const leftSource = leftAudioCtx.createBufferSource();
+  leftSource.buffer = createMonoAudioBlob(duration, sampleRate, amplitude);
+  const leftPan = leftAudioCtx.createPanner();
+  leftPan.setPosition(-1, 0, 0); // Pan to left
+  leftSource.connect(leftPan);
+  leftPan.connect(leftAudioCtx.destination);
 
   leftButton.addEventListener('click', () => {
-    leftAudio.play();
+    leftSource.start();
   });
 
-  rightButton.addEventListener('click', () => {
-    rightAudio.play();
-  });
+  // ... Rest of your code for the right channel
 </script>
 </body>
 </html>
