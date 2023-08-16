@@ -38,8 +38,11 @@
   <div class="button" id="rightButton">Right</div>
 </div>
 <script>
-  const leftButton = document.getElementById('leftButton');
-  const rightButton = document.getElementById('rightButton');
+  let audioContext;
+
+  const createAudioContext = () => {
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  };
 
   const createMonoAudioBlob = (duration, sampleRate, amplitude) => {
     const numSamples = duration * sampleRate;
@@ -59,15 +62,20 @@
   const duration = 1; // Seconds
   const amplitude = 0.5; // Amplitude (volume)
 
-  const leftAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  
+  const leftButton = document.getElementById('leftButton');
+  const rightButton = document.getElementById('rightButton');
+
   leftButton.addEventListener('click', () => {
-    const leftSource = leftAudioCtx.createBufferSource();
+    if (!audioContext) {
+      createAudioContext();
+    }
+
+    const leftSource = audioContext.createBufferSource();
     leftSource.buffer = createMonoAudioBlob(duration, sampleRate, amplitude);
-    const leftPan = leftAudioCtx.createPanner();
+    const leftPan = audioContext.createPanner();
     leftPan.setPosition(-1, 0, 0); // Pan to left
     leftSource.connect(leftPan);
-    leftPan.connect(leftAudioCtx.destination);
+    leftPan.connect(audioContext.destination);
     leftSource.start();
   });
 
