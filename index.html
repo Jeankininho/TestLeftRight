@@ -1,9 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Test Left Right Stereo</title>
+<title>Test Right Stereo</title>
 <style>
   body {
     display: flex;
@@ -12,10 +9,11 @@
     height: 100vh;
     margin: 0;
     background-color: #f5f5f5;
+    font-family: 'Courier New', Courier, monospace;
   }
   .container {
     display: flex;
-    width: 50%;
+    width: 100%;
   }
   .button {
     flex: 1;
@@ -26,6 +24,7 @@
     color: #fff;
     cursor: pointer;
     transition: background-color 0.3s;
+    height: 100vh; /* Altura de 100% da página */
   }
   .button:hover {
     background-color: #2980b9;
@@ -59,7 +58,7 @@
   };
 
   const sampleRate = 44100; // Samples per second
-  const duration = 1; // Seconds
+  const duration = 0.1; // Seconds
   const amplitude = 0.5; // Amplitude (volume)
 
   const leftButton = document.getElementById('leftButton');
@@ -79,7 +78,19 @@
     leftSource.start();
   });
 
-  // ... Rest of your code for the right channel
+  rightButton.addEventListener('click', () => {
+    if (!audioContext) {
+      createAudioContext();
+    }
+
+    const leftSource = audioContext.createBufferSource();
+    leftSource.buffer = createMonoAudioBlob(duration, sampleRate, amplitude);
+    const leftPan = audioContext.createPanner();
+    leftPan.setPosition(1, 0, 0); // Pan to left
+    leftSource.connect(leftPan);
+    leftPan.connect(audioContext.destination);
+    leftSource.start();
+  });
 </script>
 </body>
 </html>
